@@ -64,6 +64,7 @@ class TaskDestroyAPIView(generics.DestroyAPIView):
 
 
 class TagCreateAPIView(generics.CreateAPIView):
+    permission_classes = [IsAdminUser]
     serializer_class = TagSerializer
 
 
