@@ -6,7 +6,7 @@ from ToDo.models import Task, Tag
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ['name']
 
 
 class TaskSerializer(serializers.ModelSerializer):

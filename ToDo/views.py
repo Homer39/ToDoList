@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from ToDo.models import Task, Tag
-from ToDo.permissions import IsOwner
 from ToDo.serializers import TaskSerializer, TagSerializer, TaskCreateSerializer
 
 
@@ -19,10 +20,11 @@ class TaskCreateAPIView(generics.CreateAPIView):
 
 class TaskListAPIView(generics.ListAPIView):
     serializer_class = TaskSerializer
-    queryset = Task.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'tag__title']
+    search_fields = ['title', 'tag__name']
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
 
     # http://127.0.0.1:8000/tasks/?search
 
@@ -30,7 +32,9 @@ class TaskListAPIView(generics.ListAPIView):
 class TaskRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
 
 
 class TaskRetrieveViewByUUID(generics.RetrieveAPIView):
@@ -47,16 +51,19 @@ class TaskRetrieveViewByUUID(generics.RetrieveAPIView):
 class TaskUpdateAPIView(generics.UpdateAPIView):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
 
 
 class TaskDestroyAPIView(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
     queryset = Task.objects.all()
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
 
 
 class TagCreateAPIView(generics.CreateAPIView):
-    permission_classes = [IsAdminUser]
     serializer_class = TagSerializer
 
 

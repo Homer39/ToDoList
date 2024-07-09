@@ -28,10 +28,10 @@ class Task(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=50, verbose_name='Название тега')
+    name = models.CharField(max_length=50, verbose_name='Название тега')
 
     def __str__(self):
-        return f"{self.title}"
+        return f"{self.name}"
 
     class Meta:
         verbose_name = "Тег"
